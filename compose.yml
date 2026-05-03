@@ -1,0 +1,21 @@
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+      args:
+        USERNAME: dev
+        UID: ${MY_UID}
+        GID: ${MY_GID}
+
+    container_name: ironoutpost-dev
+    working_dir: /home/dev
+
+    volumes:
+      - ./src:/home/dev/src
+      - ./requirements.txt:/home/dev/requirements.txt
+
+    user: "dev"
+    command: sleep infinity
+    stdin_open: true
+    tty: true
