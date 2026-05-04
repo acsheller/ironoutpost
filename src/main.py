@@ -34,6 +34,7 @@ base = Unit(GRID_WIDTH // 2, GRID_HEIGHT // 2, "base", hp=100)
 
 wood = 0
 wave_timer = 0
+selected_worker = None
 
 
 def spawn_resources():
@@ -135,6 +136,16 @@ def draw_unit(unit):
     pygame.draw.rect(screen, color, rect)
 
 
+def draw_selection(unit):
+    border_rect = pygame.Rect(
+        unit.x * TILE_SIZE + 2,
+        unit.y * TILE_SIZE + 2,
+        TILE_SIZE - 4,
+        TILE_SIZE - 4,
+    )
+    pygame.draw.rect(screen, (255, 255, 255), border_rect, 2)
+
+
 def draw_ui():
     panel_y = GRID_HEIGHT * TILE_SIZE
     pygame.draw.rect(screen, (20, 20, 20), (0, panel_y, SCREEN_WIDTH, 80))
@@ -178,6 +189,21 @@ while running:
                     wood -= 5
                     spawn_worker()
 
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            mouse_x, mouse_y = event.pos
+
+            if mouse_y >= GRID_HEIGHT * TILE_SIZE:
+                selected_worker = None
+            else:
+                grid_x = mouse_x // TILE_SIZE
+                grid_y = mouse_y // TILE_SIZE
+
+                selected_worker = None
+                for worker in workers:
+                    if worker.x == grid_x and worker.y == grid_y:
+                        selected_worker = worker
+                        break
+
     wave_timer += 1
     if wave_timer > 600:
         spawn_enemy_wave()
@@ -195,6 +221,11 @@ while running:
 
     for worker in workers:
         draw_unit(worker)
+
+    if selected_worker in workers:
+        draw_selection(selected_worker)
+    else:
+        selected_worker = None
 
     for enemy in enemies:
         draw_unit(enemy)
