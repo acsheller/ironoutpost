@@ -1,0 +1,14 @@
+apiVersion: ironoutpost.dev/v1alpha1
+kind: SignalSource
+metadata:
+  name: demo-wideband-source
+  namespace: ironoutpost
+  labels:
+    app.kubernetes.io/name: ironoutpost
+spec:
+  outpostRef: demo-outpost
+  sourceType: network
+  centerFrequencyHz: 2400000000
+  bandwidthHz: 20000000
+  sampleRateSps: 40000000
+  endpoint: udp://239.10.0.1:5000

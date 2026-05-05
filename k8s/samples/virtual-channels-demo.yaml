@@ -1,0 +1,29 @@
+apiVersion: ironoutpost.dev/v1alpha1
+kind: VirtualChannel
+metadata:
+  name: demo-voice-channel
+  namespace: ironoutpost
+  labels:
+    app.kubernetes.io/name: ironoutpost
+spec:
+  channelizerRef: demo-channelizer
+  frequencyHz: 2395000000
+  bandwidthHz: 25000
+  multicastAddress: 239.20.0.10:6000
+  gainDb: 3.0
+  packetRatePps: 50
+---
+apiVersion: ironoutpost.dev/v1alpha1
+kind: VirtualChannel
+metadata:
+  name: demo-data-channel
+  namespace: ironoutpost
+  labels:
+    app.kubernetes.io/name: ironoutpost
+spec:
+  channelizerRef: demo-channelizer
+  frequencyHz: 2405000000
+  bandwidthHz: 1000000
+  multicastAddress: 239.20.0.11:6001
+  gainDb: 0.0
+  packetRatePps: 1000

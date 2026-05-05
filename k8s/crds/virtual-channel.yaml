@@ -1,0 +1,81 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: virtualchannels.ironoutpost.dev
+spec:
+  group: ironoutpost.dev
+  scope: Namespaced
+  names:
+    plural: virtualchannels
+    singular: virtualchannel
+    kind: VirtualChannel
+    shortNames:
+      - vc
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: Health
+          type: string
+          jsonPath: .status.health
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+      schema:
+        openAPIV3Schema:
+          type: object
+          description: VirtualChannel represents one output channel.
+          required:
+            - spec
+          properties:
+            spec:
+              type: object
+              required:
+                - channelizerRef
+                - frequencyHz
+                - bandwidthHz
+                - multicastAddress
+                - packetRatePps
+              properties:
+                channelizerRef:
+                  type: string
+                  minLength: 1
+                  description: Name of the Channelizer producing this channel.
+                frequencyHz:
+                  type: integer
+                  format: int64
+                  minimum: 0
+                bandwidthHz:
+                  type: integer
+                  format: int64
+                  minimum: 1
+                multicastAddress:
+                  type: string
+                  minLength: 1
+                  description: Multicast output address, optionally including port.
+                gainDb:
+                  type: number
+                  description: Output gain in dB.
+                packetRatePps:
+                  type: integer
+                  minimum: 1
+                  description: Packet rate in packets per second.
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                health:
+                  type: string
+                packetsTransmitted:
+                  type: integer
+                  format: int64
+                  minimum: 0
+                message:
+                  type: string

@@ -1,0 +1,14 @@
+apiVersion: ironoutpost.dev/v1alpha1
+kind: Outpost
+metadata:
+  name: demo-outpost
+  namespace: ironoutpost
+  labels:
+    app.kubernetes.io/name: ironoutpost
+spec:
+  location: Demo Lab
+  zone: lab-a
+  operator: platform-team
+  capacity:
+    racks: 2
+    signalSources: 4
