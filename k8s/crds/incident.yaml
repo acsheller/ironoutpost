@@ -1,0 +1,73 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: incidents.ironoutpost.dev
+spec:
+  group: ironoutpost.dev
+  scope: Namespaced
+  names:
+    plural: incidents
+    singular: incident
+    kind: Incident
+    shortNames:
+      - inc
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: Health
+          type: string
+          jsonPath: .status.health
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+      schema:
+        openAPIV3Schema:
+          type: object
+          description: Incident represents a problem detected by the system.
+          required:
+            - spec
+          properties:
+            spec:
+              type: object
+              required:
+                - severity
+                - summary
+              properties:
+                severity:
+                  type: string
+                  enum:
+                    - info
+                    - warning
+                    - critical
+                summary:
+                  type: string
+                  minLength: 1
+                  description: Short incident summary.
+                affectedKind:
+                  type: string
+                  description: Kind of the affected resource.
+                affectedRef:
+                  type: string
+                  description: Name of the affected resource.
+                detectedAt:
+                  type: string
+                  format: date-time
+                acknowledged:
+                  type: boolean
+                  default: false
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                health:
+                  type: string
+                message:
+                  type: string

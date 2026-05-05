@@ -1,0 +1,71 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: channelizers.ironoutpost.dev
+spec:
+  group: ironoutpost.dev
+  scope: Namespaced
+  names:
+    plural: channelizers
+    singular: channelizer
+    kind: Channelizer
+    shortNames:
+      - chz
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: Health
+          type: string
+          jsonPath: .status.health
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+      schema:
+        openAPIV3Schema:
+          type: object
+          description: Channelizer consumes a SignalSource and produces virtual channels.
+          required:
+            - spec
+          properties:
+            spec:
+              type: object
+              required:
+                - signalSourceRef
+              properties:
+                signalSourceRef:
+                  type: string
+                  minLength: 1
+                  description: Name of the SignalSource consumed by this channelizer.
+                outputCount:
+                  type: integer
+                  minimum: 0
+                  description: Desired number of virtual channel outputs.
+                algorithm:
+                  type: string
+                  description: Channelization method or profile name.
+                resources:
+                  type: object
+                  properties:
+                    cpu:
+                      type: string
+                    memory:
+                      type: string
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                health:
+                  type: string
+                readyChannels:
+                  type: integer
+                  minimum: 0
+                message:
+                  type: string

@@ -1,0 +1,14 @@
+apiVersion: ironoutpost.dev/v1alpha1
+kind: Channelizer
+metadata:
+  name: demo-channelizer
+  namespace: ironoutpost
+  labels:
+    app.kubernetes.io/name: ironoutpost
+spec:
+  signalSourceRef: demo-wideband-source
+  outputCount: 2
+  algorithm: polyphase-filter-bank
+  resources:
+    cpu: "2"
+    memory: 2Gi

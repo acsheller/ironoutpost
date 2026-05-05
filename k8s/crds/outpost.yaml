@@ -1,0 +1,73 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: outposts.ironoutpost.dev
+spec:
+  group: ironoutpost.dev
+  scope: Namespaced
+  names:
+    plural: outposts
+    singular: outpost
+    kind: Outpost
+    shortNames:
+      - op
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      additionalPrinterColumns:
+        - name: Phase
+          type: string
+          jsonPath: .status.phase
+        - name: Health
+          type: string
+          jsonPath: .status.health
+        - name: Age
+          type: date
+          jsonPath: .metadata.creationTimestamp
+      schema:
+        openAPIV3Schema:
+          type: object
+          description: Outpost represents a site, lab, or cluster zone.
+          required:
+            - spec
+          properties:
+            spec:
+              type: object
+              required:
+                - location
+              properties:
+                location:
+                  type: string
+                  minLength: 1
+                  description: Human-readable location for the outpost.
+                zone:
+                  type: string
+                  description: Cluster or facility zone identifier.
+                operator:
+                  type: string
+                  description: Team or person responsible for the outpost.
+                capacity:
+                  type: object
+                  description: Simple capacity information for the outpost.
+                  properties:
+                    racks:
+                      type: integer
+                      minimum: 0
+                    signalSources:
+                      type: integer
+                      minimum: 0
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                  description: Current lifecycle phase.
+                health:
+                  type: string
+                  description: Current health summary.
+                message:
+                  type: string
+                  description: Human-readable status details.
